@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-2xl font-display font-bold bg-gradient-to-r from-ticket-purple to-ticket-orange bg-clip-text text-transparent">
-              Ticket Fiesta
+              Ticket Time
             </span>
           </Link>
 
