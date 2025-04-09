@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           {/* Logo et description */}
           <div className="md:col-span-1">
             <Link to="/" className="text-2xl font-display font-bold bg-gradient-to-r from-ticket-purple to-ticket-orange bg-clip-text text-transparent">
-              Ticket Fiesta
+              Ticket Time
             </Link>
             <p className="mt-4 text-gray-400">
               Votre plateforme pour découvrir et réserver des billets pour les meilleurs événements.
@@ -90,13 +90,13 @@ const Footer: React.FC = () => {
               <li className="flex items-center">
                 <Mail size={18} className="mr-2 text-gray-400" />
                 <a href="mailto:contact@ticketfiesta.com" className="text-gray-400 hover:text-white transition-colors">
-                  contact@ticketfiesta.com
+                  contact@tickettime.com
                 </a>
               </li>
               <li className="flex items-center">
                 <Phone size={18} className="mr-2 text-gray-400" />
                 <a href="tel:+33123456789" className="text-gray-400 hover:text-white transition-colors">
-                  +33 1 23 45 67 89
+                  +212 704 29 34 16
                 </a>
               </li>
             </ul>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-10 pt-6">
           <p className="text-center text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} Ticket Fiesta. Tous droits réservés. Projet de fin d'études par Ayoub.
+            &copy; {new Date().getFullYear()} Ticket Time. Tous droits réservés. Projet de fin d'études par Ayoub.
           </p>
         </div>
       </div>
