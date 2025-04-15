@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,13 +7,19 @@ import { Button } from '@/components/ui/button';
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
+  initialQuery?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
   onSearch,
-  placeholder = "Rechercher un événement, lieu, catégorie..." 
+  placeholder = "Rechercher un événement, lieu, catégorie...",
+  initialQuery = ''
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setSearchQuery(initialQuery);
+  }, [initialQuery]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
