@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Event } from '../data/events';
 import { toast } from '@/components/ui/use-toast';
@@ -16,14 +15,21 @@ interface CartContextType {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getItemPrice: (price: number, quantity: number) => number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const calculatePriceWithDiscount = (basePrice: number, quantity: number): number => {
+  if (quantity >= 4) return basePrice * 0.8; // 20% de réduction pour 4 billets ou plus
+  if (quantity === 3) return basePrice * 0.85; // 15% de réduction pour 3 billets
+  if (quantity === 2) return basePrice * 0.9; // 10% de réduction pour 2 billets
+  return basePrice; // Prix normal pour 1 billet
+};
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  // Charger le panier depuis le localStorage au démarrage
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -35,30 +41,28 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Sauvegarder le panier dans le localStorage à chaque modification
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
   const addToCart = (event: Event, quantity: number) => {
     setItems(prevItems => {
-      // Vérifier si l'événement est déjà dans le panier
       const existingItemIndex = prevItems.findIndex(item => item.event.id === event.id);
       
       if (existingItemIndex !== -1) {
-        // Mettre à jour la quantité si l'événement existe déjà
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += quantity;
+        const newPrice = calculatePriceWithDiscount(event.price, updatedItems[existingItemIndex].quantity);
         toast({
           title: 'Panier mis à jour',
-          description: `${event.title} - Quantité: ${updatedItems[existingItemIndex].quantity}`,
+          description: `${event.title} - Quantité: ${updatedItems[existingItemIndex].quantity} - Prix unitaire: ${newPrice.toFixed(2)}€`,
         });
         return updatedItems;
       } else {
-        // Ajouter le nouvel événement au panier
+        const newPrice = calculatePriceWithDiscount(event.price, quantity);
         toast({
           title: 'Ajouté au panier',
-          description: `${event.title} - Quantité: ${quantity}`,
+          description: `${event.title} - Quantité: ${quantity} - Prix unitaire: ${newPrice.toFixed(2)}€`,
         });
         return [...prevItems, { event, quantity }];
       }
@@ -100,12 +104,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  const getItemPrice = (price: number, quantity: number): number => {
+    return calculatePriceWithDiscount(price, quantity);
+  };
+
   const getTotalItems = () => {
     return items.reduce((total, item) => total + item.quantity, 0);
   };
 
   const getTotalPrice = () => {
-    return items.reduce((total, item) => total + (item.event.price * item.quantity), 0);
+    return items.reduce((total, item) => {
+      const priceWithDiscount = calculatePriceWithDiscount(item.event.price, item.quantity);
+      return total + (priceWithDiscount * item.quantity);
+    }, 0);
   };
 
   return (
@@ -116,7 +127,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateQuantity, 
       clearCart, 
       getTotalItems, 
-      getTotalPrice 
+      getTotalPrice,
+      getItemPrice
     }}>
       {children}
     </CartContext.Provider>

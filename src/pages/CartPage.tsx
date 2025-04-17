@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -9,7 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { formatDate } from '@/lib/utils';
 
 const CartPage = () => {
-  const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+  const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice, getItemPrice } = useCart();
   const navigate = useNavigate();
 
   return (
@@ -48,8 +47,11 @@ const CartPage = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-end mt-3 sm:mt-0">
+                      <div className="text-sm text-gray-600 mb-1">
+                        Prix unitaire: {getItemPrice(item.event.price, item.quantity).toFixed(2)}€
+                      </div>
                       <div className="font-bold text-ticket-purple mb-2">
-                        {(item.event.price * item.quantity).toFixed(2)}€
+                        Total: {(getItemPrice(item.event.price, item.quantity) * item.quantity).toFixed(2)}€
                       </div>
                       <div className="flex items-center mb-2">
                         <Button 
