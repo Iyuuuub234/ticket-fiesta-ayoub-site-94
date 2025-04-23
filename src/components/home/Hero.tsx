@@ -1,12 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Ticket } from 'lucide-react';
-
 const Hero: React.FC = () => {
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-ticket-purple/90 to-ticket-purple py-16 md:py-24">
+  return <div className="relative overflow-hidden bg-gradient-to-br from-ticket-purple/90 to-ticket-purple py-16 md:py-24">
       {/* Cercles décoratifs */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-ticket-orange/20 rounded-full blur-3xl"></div>
       <div className="absolute top-1/2 -left-32 w-80 h-80 bg-ticket-purple/30 rounded-full blur-3xl"></div>
@@ -19,10 +16,14 @@ const Hero: React.FC = () => {
               <span className="text-ticket-orange">meilleurs événements</span><br />
               près de chez vous
             </h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-lg animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-lg animate-fade-in" style={{
+            animationDelay: '0.1s'
+          }}>
               Concerts, festivals, sports, théâtre... Trouvez et réservez facilement des billets pour les événements qui vous passionnent.
             </p>
-            <div className="flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex flex-wrap gap-4 animate-fade-in" style={{
+            animationDelay: '0.2s'
+          }}>
               <Button className="btn-gradient px-8 py-6 text-lg">
                 Découvrir les événements
               </Button>
@@ -32,7 +33,9 @@ const Hero: React.FC = () => {
                 </Button>
               </Link>
             </div>
-            <div className="flex flex-wrap gap-6 mt-12 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="flex flex-wrap gap-6 mt-12 animate-fade-in" style={{
+            animationDelay: '0.3s'
+          }}>
               <div className="flex items-center">
                 <Ticket className="text-ticket-orange mr-2" />
                 <span>Billets sécurisés</span>
@@ -43,18 +46,14 @@ const Hero: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <MapPin className="text-ticket-orange mr-2" />
-                <span>Partout en France</span>
+                <span>Partout en Maroc</span>
               </div>
             </div>
           </div>
           <div className="hidden lg:block">
             <div className="relative">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-ticket-purple/60 to-transparent"></div>
-              <img
-                src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
-                alt="Concert"
-                className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
-              />
+              <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Concert" className="rounded-2xl shadow-2xl w-full h-[500px] object-cover" />
               <div className="absolute bottom-8 left-8 right-8 bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg">
                 <div className="flex justify-between items-center">
                   <div>
@@ -74,8 +73,6 @@ const Hero: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Hero;
