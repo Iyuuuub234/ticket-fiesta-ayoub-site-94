@@ -2,12 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { getFeaturedEvents } from '@/data/events';
 import EventCard from '../events/EventCard';
 
 const FeaturedEvents: React.FC = () => {
-  const featuredEvents = getFeaturedEvents();
+  const featuredEvents = getFeaturedEvents().slice(0, 8); // Show up to 8 featured events
 
   return (
     <section className="py-16 bg-ticket-light">
@@ -30,7 +30,7 @@ const FeaturedEvents: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-12 text-center md:hidden">
+        <div className="mt-12 text-center">
           <Link to="/events">
             <Button variant="outline" className="border-ticket-purple text-ticket-purple hover:bg-ticket-purple/10">
               Voir tous les événements <ArrowRight className="ml-2 w-4 h-4" />
