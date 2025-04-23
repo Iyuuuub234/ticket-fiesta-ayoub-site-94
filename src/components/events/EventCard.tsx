@@ -34,7 +34,7 @@ const EventCard: React.FC<EventCardProps> = ({
             </div>}
         </div>
         
-        <div className="p-4\n">
+        <div className="p-4">
           <div className="flex items-center text-sm text-gray-600 mb-2">
             <Calendar className="w-4 h-4 mr-1" /> 
             {formatDate(event.date)} - {event.time}
