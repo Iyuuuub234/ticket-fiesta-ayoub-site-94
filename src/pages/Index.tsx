@@ -8,6 +8,7 @@ import SearchBar from '@/components/ui/SearchBar';
 import { useNavigate } from 'react-router-dom';
 import { Categories } from '@/components/events/Categories';
 import { categories } from '@/data/events';
+import TicketGrid from '@/components/home/TicketGrid';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        <TicketGrid />
         
         <section className="py-12 bg-gray-50">
           <div className="container-custom">
