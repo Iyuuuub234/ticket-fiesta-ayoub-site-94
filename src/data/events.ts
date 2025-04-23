@@ -1,4 +1,3 @@
-
 export interface Event {
   id: string;
   title: string;
@@ -126,6 +125,58 @@ export const events: Event[] = [
     price: 12.00,
     description: "Les plus beaux clichés de nature sauvage réunis dans une exposition époustouflante. Découvrez la beauté de notre planète à travers l'objectif des plus grands photographes.",
     featured: false
+  },
+  {
+    id: "9",
+    title: "Festival Jazz & Blues",
+    date: "2024-08-20",
+    time: "19:00",
+    location: "Nantes",
+    venue: "Le Lieu Unique",
+    category: "Festivals",
+    image: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+    price: 35.00,
+    description: "Une soirée exceptionnelle de jazz et de blues avec des artistes internationaux. Ambiance chaleureuse et conviviale garantie.",
+    featured: true
+  },
+  {
+    id: "10",
+    title: "Match de Basketball - Playoffs",
+    date: "2024-09-15",
+    time: "20:30",
+    location: "Paris",
+    venue: "Accor Arena",
+    category: "Sports",
+    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+    price: 45.00,
+    description: "Match décisif des playoffs de basketball. Venez supporter votre équipe favorite dans une ambiance électrique !",
+    featured: true
+  },
+  {
+    id: "11",
+    title: "Exposition Art Moderne",
+    date: "2024-10-01",
+    time: "10:00",
+    location: "Lyon",
+    venue: "Musée d'Art Contemporain",
+    category: "Expositions",
+    image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+    price: 12.00,
+    description: "Une exposition unique présentant les œuvres marquantes de l'art moderne. Un voyage à travers les mouvements artistiques contemporains.",
+    featured: true
+  },
+  {
+    id: "12",
+    title: "Spectacle de Danse Contemporaine",
+    date: "2024-09-25",
+    time: "20:00",
+    location: "Marseille",
+    venue: "Opéra Municipal",
+    category: "Théâtre",
+    image: "https://images.unsplash.com/photo-1545959563-db773e23bc75?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+    price: 28.00,
+    description: "Un spectacle innovant mêlant danse contemporaine et arts numériques. Une expérience visuelle et émotionnelle unique.",
+    featured: true
   }
 ];
 
