@@ -3,7 +3,7 @@ import React from 'react';
 import { Ticket } from 'lucide-react';
 
 const TicketGrid = () => {
-  const tickets = Array(16).fill(null);
+  const tickets = Array(32).fill(null);
   
   return (
     <section className="py-16 bg-white">
@@ -25,3 +25,4 @@ const TicketGrid = () => {
 };
 
 export default TicketGrid;
+
