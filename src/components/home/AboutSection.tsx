@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Info, Service, Objective, Client } from 'lucide-react';
+import { Package, Target, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const AboutSection = () => {
@@ -19,7 +19,7 @@ const AboutSection = () => {
             <CardContent className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="p-3 rounded-full bg-ticket-purple/10">
-                  <Service className="w-6 h-6 text-ticket-purple" />
+                  <Package className="w-6 h-6 text-ticket-purple" />
                 </div>
                 <h3 className="font-semibold text-xl">Nos Services</h3>
               </div>
@@ -34,7 +34,7 @@ const AboutSection = () => {
             <CardContent className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="p-3 rounded-full bg-ticket-orange/10">
-                  <Objective className="w-6 h-6 text-ticket-orange" />
+                  <Target className="w-6 h-6 text-ticket-orange" />
                 </div>
                 <h3 className="font-semibold text-xl">Notre Mission</h3>
               </div>
@@ -49,7 +49,7 @@ const AboutSection = () => {
             <CardContent className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="p-3 rounded-full bg-green-500/10">
-                  <Client className="w-6 h-6 text-green-500" />
+                  <Users className="w-6 h-6 text-green-500" />
                 </div>
                 <h3 className="font-semibold text-xl">Pour Nos Clients</h3>
               </div>
