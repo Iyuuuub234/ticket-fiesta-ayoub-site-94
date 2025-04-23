@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Categories } from '@/components/events/Categories';
 import { categories } from '@/data/events';
 import TicketGrid from '@/components/home/TicketGrid';
+import AboutSection from '@/components/home/AboutSection';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        <AboutSection />
         
         <section className="py-12 bg-white">
           <div className="container-custom">
