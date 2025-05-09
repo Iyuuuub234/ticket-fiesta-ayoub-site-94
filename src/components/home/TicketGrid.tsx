@@ -1,9 +1,9 @@
 
-import React, { useEffect } from 'react';
-import { Ticket, Image as ImageIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { events } from '@/data/events';
 
@@ -15,6 +15,7 @@ const TicketGrid = () => {
   }));
 
   const [api, setApi] = React.useState<any>();
+  const [current, setCurrent] = useState(0);
   
   // Setup auto-slide functionality
   useEffect(() => {
@@ -28,6 +29,23 @@ const TicketGrid = () => {
     // Clear the interval when component unmounts
     return () => clearInterval(autoplayInterval);
   }, [api]);
+
+  useEffect(() => {
+    if (!api) return;
+    
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+
+    // Set initial current slide
+    setCurrent(api.selectedScrollSnap());
+  }, [api]);
+
+  const handleDotClick = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+    }
+  };
 
   return <section className="py-12 bg-white">
       <div className="container-custom">
@@ -64,9 +82,21 @@ const TicketGrid = () => {
                   </Link>
                 </CarouselItem>)}
             </CarouselContent>
-            <div className="flex items-center justify-center mt-4">
-              <CarouselPrevious className="static translate-y-0 mr-2" />
-              <CarouselNext className="static translate-y-0 ml-2" />
+            
+            {/* Custom dot indicators styled as lines */}
+            <div className="flex items-center justify-center gap-3 mt-6">
+              {ticketImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  className={`h-1 rounded-none transition-all ${
+                    current === index 
+                      ? "w-6 bg-ticket-orange" 
+                      : "w-6 bg-gray-300"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
             </div>
           </Carousel>
 
