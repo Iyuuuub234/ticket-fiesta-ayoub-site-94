@@ -1,16 +1,34 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { Ticket, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { events } from '@/data/events';
+
 const TicketGrid = () => {
   const ticketImages = events.map(event => ({
     id: event.id,
     image: event.image,
     title: event.title
   }));
+
+  const [api, setApi] = React.useState<any>();
+  
+  // Setup auto-slide functionality
+  useEffect(() => {
+    if (!api) return;
+    
+    // Start autoplay with 3-second intervals
+    const autoplayInterval = setInterval(() => {
+      api.scrollNext();
+    }, 3000);
+    
+    // Clear the interval when component unmounts
+    return () => clearInterval(autoplayInterval);
+  }, [api]);
+
   return <section className="py-12 bg-white">
       <div className="container-custom">
         <div className="text-center mb-8">
@@ -21,7 +39,7 @@ const TicketGrid = () => {
         </div>
 
         <div className="max-w-5xl mx-auto px-8">
-          <Carousel className="w-full">
+          <Carousel className="w-full" setApi={setApi}>
             <CarouselContent>
               {ticketImages.map(item => <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
                   <Link to={`/event/${item.id}`}>
