@@ -56,10 +56,10 @@ const TicketGrid = () => {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto px-8">
+        <div className="max-w-6xl mx-auto px-8">
           <Carousel className="w-full" setApi={setApi}>
             <CarouselContent>
-              {ticketImages.map(item => <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
+              {ticketImages.map(item => <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/4">
                   <Link to={`/event/${item.id}`}>
                     <div className="p-1">
                       <Card className="overflow-hidden hover:shadow-lg transition-shadow">
