@@ -16,6 +16,7 @@ const TicketGrid = () => {
 
   const [api, setApi] = React.useState<any>();
   const [current, setCurrent] = useState(0);
+  const [totalSlides, setTotalSlides] = useState(0);
   
   // Setup auto-slide functionality
   useEffect(() => {
@@ -37,14 +38,41 @@ const TicketGrid = () => {
       setCurrent(api.selectedScrollSnap());
     });
 
-    // Set initial current slide
+    // Set initial current slide and total slides
     setCurrent(api.selectedScrollSnap());
+    setTotalSlides(api.scrollSnapList().length);
   }, [api]);
 
   const handleDotClick = (index: number) => {
     if (api) {
       api.scrollTo(index);
     }
+  };
+
+  // Create fixed number of 6 buttons
+  const renderNavButtons = () => {
+    // Create exactly 6 buttons
+    const buttons = [];
+    for (let i = 0; i < 6; i++) {
+      // Calculate which slide this button corresponds to
+      const slideIndex = Math.floor(i * (totalSlides / 6));
+      
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handleDotClick(slideIndex)}
+          className={`h-1 rounded-none transition-all ${
+            current === slideIndex || 
+            (i === 5 && current >= slideIndex) || 
+            (i < 5 && current >= slideIndex && current < Math.floor((i + 1) * (totalSlides / 6)))
+              ? "w-6 bg-ticket-orange" 
+              : "w-6 bg-gray-300"
+          }`}
+          aria-label={`Go to slide group ${i + 1}`}
+        />
+      );
+    }
+    return buttons;
   };
 
   return <section className="py-12 bg-white">
@@ -83,20 +111,9 @@ const TicketGrid = () => {
                 </CarouselItem>)}
             </CarouselContent>
             
-            {/* Custom dot indicators styled as lines */}
+            {/* Fixed 6 dot indicators styled as lines */}
             <div className="flex items-center justify-center gap-3 mt-6">
-              {ticketImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleDotClick(index)}
-                  className={`h-1 rounded-none transition-all ${
-                    current === index 
-                      ? "w-6 bg-ticket-orange" 
-                      : "w-6 bg-gray-300"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
+              {totalSlides > 0 && renderNavButtons()}
             </div>
           </Carousel>
 
