@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -8,7 +9,6 @@ import { getEventById, getEventsByCategory } from '@/data/events';
 import { useCart } from '@/context/CartContext';
 import EventCard from '@/components/events/EventCard';
 import { formatDate } from '@/lib/utils';
-import EventSharingButtons from '@/components/events/EventSharingButtons';
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -164,7 +164,13 @@ const EventDetail = () => {
                   </div>
                   
                   <div className="flex justify-between">
-                    <EventSharingButtons eventId={event.id} eventTitle={event.title} />
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 hover:text-ticket-purple"
+                    >
+                      <Share2 className="w-4 h-4 mr-1" /> Partager
+                    </Button>
                     <Button 
                       variant="ghost"
                       size="sm"
