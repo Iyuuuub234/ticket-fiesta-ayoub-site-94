@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Image as ImageIcon, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { events } from '@/data/events';
-
 const TicketGrid = () => {
   const ticketImages = events.map(event => ({
     id: event.id,
@@ -17,32 +15,27 @@ const TicketGrid = () => {
 
   // État pour suivre la catégorie sélectionnée pour les recommandations
   const [selectedCategory, setSelectedCategory] = useState<string>("Concerts");
-  
-  // Recommandations basées sur la catégorie sélectionnée
-  const recommendedEvents = events
-    .filter(event => event.category === selectedCategory)
-    .slice(0, 4);
 
+  // Recommandations basées sur la catégorie sélectionnée
+  const recommendedEvents = events.filter(event => event.category === selectedCategory).slice(0, 4);
   const [api, setApi] = React.useState<any>();
   const [current, setCurrent] = useState(0);
   const [totalSlides, setTotalSlides] = useState(0);
-  
+
   // Setup auto-slide functionality
   useEffect(() => {
     if (!api) return;
-    
+
     // Start autoplay with 3-second intervals
     const autoplayInterval = setInterval(() => {
       api.scrollNext();
     }, 3000);
-    
+
     // Clear the interval when component unmounts
     return () => clearInterval(autoplayInterval);
   }, [api]);
-
   useEffect(() => {
     if (!api) return;
-    
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
     });
@@ -51,7 +44,6 @@ const TicketGrid = () => {
     setCurrent(api.selectedScrollSnap());
     setTotalSlides(api.scrollSnapList().length);
   }, [api]);
-
   const handleDotClick = (index: number) => {
     if (api) {
       api.scrollTo(index);
@@ -65,27 +57,11 @@ const TicketGrid = () => {
     for (let i = 0; i < 6; i++) {
       // Calculate which slide this button corresponds to
       const slideIndex = Math.floor(i * (totalSlides / 6));
-      
-      buttons.push(
-        <button
-          key={i}
-          onClick={() => handleDotClick(slideIndex)}
-          className={`h-1 rounded-none transition-all ${
-            current === slideIndex || 
-            (i === 5 && current >= slideIndex) || 
-            (i < 5 && current >= slideIndex && current < Math.floor((i + 1) * (totalSlides / 6)))
-              ? "w-6 bg-ticket-orange" 
-              : "w-6 bg-gray-300"
-          }`}
-          aria-label={`Go to slide group ${i + 1}`}
-        />
-      );
+      buttons.push(<button key={i} onClick={() => handleDotClick(slideIndex)} className={`h-1 rounded-none transition-all ${current === slideIndex || i === 5 && current >= slideIndex || i < 5 && current >= slideIndex && current < Math.floor((i + 1) * (totalSlides / 6)) ? "w-6 bg-ticket-orange" : "w-6 bg-gray-300"}`} aria-label={`Go to slide group ${i + 1}`} />);
     }
     return buttons;
   };
-
-  return (
-    <>
+  return <>
       <section className="py-12 bg-white">
         <div className="container-custom">
           <div className="text-center mb-8">
@@ -98,8 +74,7 @@ const TicketGrid = () => {
           <div className="max-w-6xl mx-auto px-8">
             <Carousel className="w-full" setApi={setApi}>
               <CarouselContent>
-                {ticketImages.map(item => (
-                  <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/4">
+                {ticketImages.map(item => <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/4">
                     <Link to={`/event/${item.id}`}>
                       <div className="p-1">
                         <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -120,8 +95,7 @@ const TicketGrid = () => {
                         </Card>
                       </div>
                     </Link>
-                  </CarouselItem>
-                ))}
+                  </CarouselItem>)}
               </CarouselContent>
               
               {/* Fixed 6 dot indicators styled as lines */}
@@ -132,9 +106,7 @@ const TicketGrid = () => {
 
             <div className="mt-8 text-center">
               <Link to="/events">
-                <Button variant="outline" className="border-ticket-purple text-ticket-purple hover:bg-ticket-purple/10">
-                  Voir tous les événements <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                
               </Link>
             </div>
           </div>
@@ -152,32 +124,18 @@ const TicketGrid = () => {
             
             {/* Sélecteur de catégories pour personnaliser les recommandations */}
             <div className="flex flex-wrap gap-2 mt-4">
-              {['Concerts', 'Festivals', 'Sports', 'Théâtre', 'Expositions', 'Conférences'].map(category => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  className={selectedCategory === category 
-                    ? "bg-ticket-purple hover:bg-ticket-purple/90" 
-                    : "border-gray-200"}
-                  onClick={() => setSelectedCategory(category)}
-                >
+              {['Concerts', 'Festivals', 'Sports', 'Théâtre', 'Expositions', 'Conférences'].map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} className={selectedCategory === category ? "bg-ticket-purple hover:bg-ticket-purple/90" : "border-gray-200"} onClick={() => setSelectedCategory(category)}>
                   {category}
-                </Button>
-              ))}
+                </Button>)}
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recommendedEvents.map(event => (
-              <Link key={event.id} to={`/event/${event.id}`} className="block group">
+            {recommendedEvents.map(event => <Link key={event.id} to={`/event/${event.id}`} className="block group">
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                   <CardContent className="p-0 relative">
                     <div className="h-48 overflow-hidden">
-                      <img 
-                        src={event.image} 
-                        alt={event.title} 
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
+                      <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
                     <div className="p-4">
                       <span className="text-xs font-medium text-ticket-purple bg-ticket-purple/10 px-2 py-1 rounded-full">
@@ -195,8 +153,7 @@ const TicketGrid = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
+              </Link>)}
           </div>
           
           <div className="mt-8 text-center">
@@ -208,8 +165,6 @@ const TicketGrid = () => {
           </div>
         </div>
       </section>
-    </>
-  );
+    </>;
 };
-
 export default TicketGrid;
