@@ -8,17 +8,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CreditCard, Check, ShieldCheck, Clock } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useTransactions } from '@/context/TransactionsContext';
 import { toast } from '@/components/ui/use-toast';
 
 const CheckoutPage = () => {
   const { items, getTotalPrice, clearCart } = useCart();
+  const { addTransaction } = useTransactions();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+  });
 
   if (items.length === 0) {
     navigate('/cart');
     return null;
   }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +40,16 @@ const CheckoutPage = () => {
     // Simuler un temps de traitement
     setTimeout(() => {
       setIsSubmitting(false);
+      
+      // Ajouter la transaction au contexte
+      addTransaction({
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        customerEmail: formData.email,
+        items: items,
+        totalAmount: getTotalPrice(),
+        status: 'completed'
+      });
+      
       clearCart();
       toast({
         title: "Commande confirmée!",
@@ -51,19 +74,40 @@ const CheckoutPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">Prénom</Label>
-                      <Input id="firstName" required />
+                      <Input 
+                        id="firstName" 
+                        required 
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Nom</Label>
-                      <Input id="lastName" required />
+                      <Input 
+                        id="lastName" 
+                        required 
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" required />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        required 
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Téléphone</Label>
-                      <Input id="phone" required />
+                      <Input 
+                        id="phone" 
+                        required 
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
 

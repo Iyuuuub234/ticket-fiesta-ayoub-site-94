@@ -6,13 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { BarChart, Calendar, Users, Filter, Download } from "lucide-react";
+import { BarChart, Calendar, Users, Filter, Download, ShoppingBag } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { events } from "@/data/events";
 import { useForm } from "react-hook-form";
+import { useTransactions } from "@/context/TransactionsContext";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 // Données factices pour les graphiques
 const salesData = [
@@ -45,6 +48,16 @@ const usersData = [
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const form = useForm();
+  const { transactions } = useTransactions();
+
+  // Calculer le montant total des ventes
+  const totalSales = transactions.reduce((total, tx) => total + tx.totalAmount, 0);
+  
+  // Calculer le nombre total de tickets vendus
+  const totalTickets = transactions.reduce(
+    (total, tx) => total + tx.items.reduce((sum, item) => sum + item.quantity, 0), 
+    0
+  );
 
   return (
     <div className="container mx-auto py-8">
@@ -63,8 +76,10 @@ const AdminDashboard = () => {
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">€42,350</div>
-            <p className="text-xs text-muted-foreground">+20.1% par rapport au mois dernier</p>
+            <div className="text-2xl font-bold">€{totalSales.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">
+              {transactions.length > 0 ? '+20.1% par rapport au mois dernier' : 'Aucune vente ce mois-ci'}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -89,12 +104,14 @@ const AdminDashboard = () => {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Taux de Conversion</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Tickets Vendus</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24%</div>
-            <p className="text-xs text-muted-foreground">+5.2% par rapport au mois dernier</p>
+            <div className="text-2xl font-bold">{totalTickets}</div>
+            <p className="text-xs text-muted-foreground">
+              {transactions.length > 0 ? '+5.2% par rapport au mois dernier' : 'Aucun ticket vendu ce mois-ci'}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -103,6 +120,7 @@ const AdminDashboard = () => {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+          <TabsTrigger value="sales">Ventes</TabsTrigger>
           <TabsTrigger value="events">Événements</TabsTrigger>
           <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="reports">Rapports</TabsTrigger>
@@ -168,6 +186,75 @@ const AdminDashboard = () => {
           </div>
         </TabsContent>
 
+        {/* Ventes */}
+        <TabsContent value="sales" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Historique des Ventes</CardTitle>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" className="h-8 gap-1">
+                    <Filter className="h-4 w-4" />
+                    Filtrer
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 gap-1">
+                    <Download className="h-4 w-4" />
+                    Exporter
+                  </Button>
+                </div>
+              </div>
+              <CardDescription>
+                Toutes les transactions - {transactions.length} au total
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Client</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Articles</TableHead>
+                    <TableHead>Montant</TableHead>
+                    <TableHead>Statut</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.length > 0 ? (
+                    transactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell className="font-medium">{transaction.id.substring(0, 8)}...</TableCell>
+                        <TableCell>
+                          {format(new Date(transaction.date), 'dd/MM/yyyy HH:mm', { locale: fr })}
+                        </TableCell>
+                        <TableCell>{transaction.customerName}</TableCell>
+                        <TableCell>{transaction.customerEmail}</TableCell>
+                        <TableCell>
+                          {transaction.items.reduce((total, item) => total + item.quantity, 0)} tickets
+                        </TableCell>
+                        <TableCell>{transaction.totalAmount.toFixed(2)} €</TableCell>
+                        <TableCell>
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {transaction.status === 'completed' ? 'Complété' : 
+                             transaction.status === 'pending' ? 'En attente' : 'Échoué'}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-6 text-gray-500">
+                        Aucune transaction enregistrée
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Événements */}
         <TabsContent value="events" className="space-y-4">
           <Card>
@@ -208,7 +295,13 @@ const AdminDashboard = () => {
                       <TableCell>{event.date}</TableCell>
                       <TableCell>{event.location}</TableCell>
                       <TableCell>{`${event.price} €`}</TableCell>
-                      <TableCell>{Math.floor(Math.random() * 500)}</TableCell>
+                      <TableCell>
+                        {transactions.reduce((total, tx) => {
+                          const eventItems = tx.items.filter(item => item.event.id === event.id);
+                          return total + (eventItems.length > 0 ? 
+                            eventItems.reduce((sum, item) => sum + item.quantity, 0) : 0);
+                        }, 0) || Math.floor(Math.random() * 500)}
+                      </TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm">Éditer</Button>
                       </TableCell>

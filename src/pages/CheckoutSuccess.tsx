@@ -5,8 +5,13 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Mail, Download, Calendar } from 'lucide-react';
+import { useTransactions } from '@/context/TransactionsContext';
 
 const CheckoutSuccess = () => {
+  // Récupérer la dernière transaction
+  const { transactions } = useTransactions();
+  const latestTransaction = transactions.length > 0 ? transactions[0] : null;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -20,6 +25,32 @@ const CheckoutSuccess = () => {
             <p className="text-lg text-gray-600 mb-8">
               Merci pour votre achat. Vos billets ont été réservés avec succès et vous ont été envoyés par email.
             </p>
+
+            {latestTransaction && (
+              <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+                <h3 className="font-bold text-lg mb-3">Détails de la commande</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Numéro de commande:</span>
+                    <span className="font-medium">{latestTransaction.id.substring(0, 8)}...</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Date:</span>
+                    <span className="font-medium">
+                      {new Date(latestTransaction.date).toLocaleDateString('fr-FR')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total:</span>
+                    <span className="font-medium">{latestTransaction.totalAmount.toFixed(2)}€</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Statut:</span>
+                    <span className="font-medium text-green-600">Payée</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
               <div className="flex items-center justify-center mb-4">
