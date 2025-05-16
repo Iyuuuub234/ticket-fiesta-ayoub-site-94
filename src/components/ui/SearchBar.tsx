@@ -34,7 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-10 pr-20 py-6 rounded-full border-gray-300 focus:border-ticket-purple focus:ring-ticket-purple bg-white"
+          className="w-full pl-10 pr-20 py-6 rounded-full border-gray-700 focus:border-ticket-purple focus:ring-ticket-purple bg-[#1A1F2C] text-white placeholder:text-gray-400"
         />
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
           <Search size={20} />
