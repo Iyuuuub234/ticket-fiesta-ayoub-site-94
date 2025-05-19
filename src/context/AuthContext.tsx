@@ -14,7 +14,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     // Simulation d'une connexion à l'API
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<User>((resolve, reject) => {
       setTimeout(() => {
         const foundUser = mockUsers.find(u => u.email === email && u.password === password);
         
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { password, ...userWithoutPassword } = foundUser;
           setUser(userWithoutPassword);
           localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-          resolve();
+          resolve(userWithoutPassword);
         } else {
           reject(new Error('Identifiants invalides'));
         }
