@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -9,11 +9,13 @@ import { Label } from '@/components/ui/label';
 import { CreditCard, Check, ShieldCheck, Clock } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useTransactions } from '@/context/TransactionsContext';
+import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/components/ui/use-toast';
 
 const CheckoutPage = () => {
   const { items, getTotalPrice, clearCart } = useCart();
   const { addTransaction } = useTransactions();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,6 +24,19 @@ const CheckoutPage = () => {
     email: '',
     phone: '',
   });
+
+  // Si l'utilisateur est connecté, pré-remplir l'email
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: user.email,
+        // Si le nom contient un espace, le diviser en prénom et nom
+        firstName: user.name.split(' ')[0] || '',
+        lastName: user.name.split(' ').slice(1).join(' ') || ''
+      }));
+    }
+  }, [user]);
 
   if (items.length === 0) {
     navigate('/cart');
@@ -98,6 +113,8 @@ const CheckoutPage = () => {
                         required 
                         value={formData.email}
                         onChange={handleInputChange}
+                        readOnly={!!user}
+                        className={user ? "bg-gray-100" : ""}
                       />
                     </div>
                     <div className="space-y-2">
