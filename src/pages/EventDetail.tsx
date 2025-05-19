@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -6,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Info, Ticket, ChevronRight, Share2, Heart, Users } from 'lucide-react';
 import { getEventById, getEventsByCategory } from '@/data/events';
 import { useCart } from '@/context/CartContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useToast } from '@/hooks/use-toast';
 import EventCard from '@/components/events/EventCard';
 import { formatDate } from '@/lib/utils';
 import EventSharingButtons from '@/components/events/EventSharingButtons';
@@ -14,6 +17,8 @@ const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isInFavorites } = useFavorites();
+  const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   
   // Récupérer les détails de l'événement
@@ -47,6 +52,24 @@ const EventDetail = () => {
   const handleBuyNow = () => {
     addToCart(event, quantity);
     navigate('/cart');
+  };
+
+  // Handle toggle favorite
+  const handleToggleFavorite = () => {
+    const isFavorite = isInFavorites(event.id);
+    if (isFavorite) {
+      removeFromFavorites(event.id);
+      toast({
+        title: "Retiré des favoris",
+        description: `${event.title} a été retiré de vos favoris`,
+      });
+    } else {
+      addToFavorites(event);
+      toast({
+        title: "Ajouté aux favoris",
+        description: `${event.title} a été ajouté à vos favoris`,
+      });
+    }
   };
 
   return (
@@ -168,9 +191,15 @@ const EventDetail = () => {
                     <Button 
                       variant="ghost"
                       size="sm"
-                      className="text-gray-600 hover:text-red-500"
+                      className={`${
+                        isInFavorites(event.id) 
+                          ? "text-red-500 hover:text-gray-600" 
+                          : "text-gray-600 hover:text-red-500"
+                      }`}
+                      onClick={handleToggleFavorite}
                     >
-                      <Heart className="w-4 h-4 mr-1" /> Favoris
+                      <Heart className={`w-4 h-4 mr-1 ${isInFavorites(event.id) ? "fill-current" : ""}`} />
+                      {isInFavorites(event.id) ? "Retiré des favoris" : "Ajouter aux favoris"}
                     </Button>
                   </div>
                 </div>

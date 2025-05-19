@@ -1,10 +1,10 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { useTransactions } from '@/context/TransactionsContext';
+import { useFavorites } from '@/context/FavoritesContext';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Calendar, Ticket, User, Bookmark, ShoppingCart } from 'lucide-react';
@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 const UserDashboard = () => {
   const { user, isAuthenticated } = useAuth();
   const { transactions } = useTransactions();
+  const { favorites } = useFavorites();
   const navigate = useNavigate();
 
   // Filter transactions for the current user
@@ -44,6 +45,11 @@ const UserDashboard = () => {
   if (!user) {
     return null;
   }
+
+  // Function to navigate to favorites view
+  const handleViewFavorites = () => {
+    navigate('/events', { state: { viewFavorites: true } });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -104,8 +110,17 @@ const UserDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold">0</p>
+                <p className="text-3xl font-bold">{favorites.length}</p>
                 <p className="text-sm text-gray-500">Dans vos favoris</p>
+                {favorites.length > 0 && (
+                  <Button 
+                    variant="link" 
+                    className="text-green-500 p-0 h-auto"
+                    onClick={handleViewFavorites}
+                  >
+                    Voir tous
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -173,6 +188,61 @@ const UserDashboard = () => {
               <CardContent>
                 <div className="bg-gray-100 p-4 rounded text-center">
                   <p>Aucun achat trouvé dans votre historique.</p>
+                  <Button variant="link" onClick={() => navigate('/events')}>
+                    Explorer les événements
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {favorites.length > 0 ? (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Mes événements favoris</CardTitle>
+                <CardDescription>Événements que vous avez sauvegardés</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {favorites.slice(0, 3).map(event => (
+                    <div key={event.id} className="flex items-center space-x-3 p-3 rounded-lg border">
+                      <img 
+                        src={event.image} 
+                        alt={event.title}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      <div>
+                        <h4 className="font-medium">{event.title}</h4>
+                        <p className="text-sm text-gray-500">{formatDate(event.date)}</p>
+                        <Button 
+                          variant="link" 
+                          className="text-ticket-purple p-0 h-auto" 
+                          onClick={() => navigate(`/event/${event.id}`)}
+                        >
+                          Voir l'événement
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {favorites.length > 3 && (
+                  <div className="mt-4 text-center">
+                    <Button variant="outline" onClick={handleViewFavorites}>
+                      Voir tous mes favoris ({favorites.length})
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Mes événements favoris</CardTitle>
+                <CardDescription>Vous n'avez pas encore sauvegardé d'événements</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gray-100 p-4 rounded text-center">
+                  <p>Ajoutez des événements à vos favoris pour les retrouver facilement.</p>
                   <Button variant="link" onClick={() => navigate('/events')}>
                     Explorer les événements
                   </Button>

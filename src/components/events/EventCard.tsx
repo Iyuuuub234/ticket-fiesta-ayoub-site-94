@@ -1,25 +1,41 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Event } from '@/data/events';
 import { useCart } from '@/context/CartContext';
+import { useFavorites } from '@/context/FavoritesContext';
 import { formatDate } from '@/lib/utils';
+
 interface EventCardProps {
   event: Event;
 }
+
 const EventCard: React.FC<EventCardProps> = ({
   event
 }) => {
-  const {
-    addToCart
-  } = useCart();
+  const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isInFavorites } = useFavorites();
+  
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(event, 1);
   };
+  
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isInFavorites(event.id)) {
+      removeFromFavorites(event.id);
+    } else {
+      addToFavorites(event);
+    }
+  };
+
   return <div className="event-card group animate-scale-in">
       <Link to={`/event/${event.id}`} className="block">
         <div className="relative overflow-hidden">
@@ -49,7 +65,22 @@ const EventCard: React.FC<EventCardProps> = ({
           <div className="flex justify-between items-center">
             <span className="font-bold text-ticket-purple">{event.price.toFixed(2)}€</span>
             <div className="flex space-x-2">
-              <Button size="sm" variant="outline" className="text-xs border-ticket-purple text-ticket-purple hover:bg-ticket-purple/10" onClick={handleAddToCart}>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className={`text-xs p-1 ${
+                  isInFavorites(event.id) ? "text-red-500" : "text-gray-500"
+                }`}
+                onClick={handleToggleFavorite}
+              >
+                <Heart className={`w-4 h-4 ${isInFavorites(event.id) ? "fill-current" : ""}`} />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="text-xs border-ticket-purple text-ticket-purple hover:bg-ticket-purple/10" 
+                onClick={handleAddToCart}
+              >
                 Ajouter au panier
               </Button>
             </div>
@@ -58,4 +89,5 @@ const EventCard: React.FC<EventCardProps> = ({
       </Link>
     </div>;
 };
+
 export default EventCard;
