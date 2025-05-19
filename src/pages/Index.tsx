@@ -1,21 +1,37 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/home/Hero';
 import FeaturedEvents from '@/components/home/FeaturedEvents';
 import SearchBar from '@/components/ui/SearchBar';
-import { useNavigate } from 'react-router-dom';
 import { Categories } from '@/components/events/Categories';
 import { categories } from '@/data/events';
 import TicketGrid from '@/components/home/TicketGrid';
 import AboutSection from '@/components/home/AboutSection';
+import { Button } from '@/components/ui/button';
+import { LogIn } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   const handleSearch = (query: string) => {
     navigate(`/events?search=${encodeURIComponent(query)}`);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleDashboardClick = () => {
+    if (user?.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -30,6 +46,20 @@ const Index = () => {
             <div className="max-w-3xl mx-auto">
               <h2 className="text-2xl font-bold text-center mb-6">Trouvez votre prochain événement</h2>
               <SearchBar onSearch={handleSearch} />
+              
+              {/* Bouton de connexion */}
+              <div className="mt-6 text-center">
+                {isAuthenticated ? (
+                  <Button className="btn-gradient" onClick={handleDashboardClick}>
+                    Accéder à mon espace
+                  </Button>
+                ) : (
+                  <Button className="bg-ticket-purple hover:bg-ticket-purple/90" onClick={handleLoginClick}>
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Se connecter
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </section>

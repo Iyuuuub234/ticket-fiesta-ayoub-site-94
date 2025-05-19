@@ -1,21 +1,45 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu, X, Search, User, LogIn, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Sheet, 
   SheetContent, 
   SheetTrigger 
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar: React.FC = () => {
   const { getTotalItems } = useCart();
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const goToDashboard = () => {
+    if (user?.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -62,6 +86,38 @@ const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
+
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-gray-700 hover:text-ticket-purple relative">
+                    <User size={20} />
+                    {user?.role === 'admin' && (
+                      <span className="absolute -top-1 -right-1 bg-ticket-purple text-white w-4 h-4 rounded-full text-[10px] flex items-center justify-center">
+                        A
+                      </span>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={goToDashboard}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Tableau de bord</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Déconnexion</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="outline" size="sm" className="ml-4" onClick={() => navigate('/login')}>
+                <LogIn className="mr-2 h-4 w-4" />
+                Connexion
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -76,6 +132,17 @@ const Navbar: React.FC = () => {
                 )}
               </Button>
             </Link>
+
+            {isAuthenticated ? (
+              <Button variant="ghost" size="icon" className="text-gray-700" onClick={goToDashboard}>
+                <User size={20} />
+              </Button>
+            ) : (
+              <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
+                <LogIn size={20} />
+              </Button>
+            )}
+
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-gray-700">
@@ -99,6 +166,16 @@ const Navbar: React.FC = () => {
                   <Link to="/search" className="text-lg font-medium hover:text-ticket-purple">
                     Recherche
                   </Link>
+                  {isAuthenticated && (
+                    <>
+                      <div className="border-t border-gray-200 pt-6">
+                        <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Déconnexion
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
