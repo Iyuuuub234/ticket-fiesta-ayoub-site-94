@@ -72,7 +72,7 @@ const LoginPage = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="exemple@email.com"
+                  placeholder="votrenom@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -107,7 +107,7 @@ const LoginPage = () => {
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-gray-500 text-center">
               <p>Comptes de démonstration:</p>
-              <p>User: user@example.com / password123</p>
+              <p>User: <strong>votrenom@example.com</strong> / password123</p>
               <p>Admin: admin@example.com / admin123</p>
             </div>
           </CardFooter>

@@ -24,7 +24,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Mock des utilisateurs pour la démo
 const mockUsers = [
-  { id: '1', name: 'Utilisateur Test', email: 'user@example.com', password: 'password123', role: 'user' as UserRole },
   { id: '2', name: 'Admin Test', email: 'admin@example.com', password: 'admin123', role: 'admin' as UserRole },
 ];
 
@@ -45,14 +44,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulation d'une connexion à l'API
     return new Promise<User>((resolve, reject) => {
       setTimeout(() => {
-        const foundUser = mockUsers.find(u => u.email === email && u.password === password);
+        // Vérifier si c'est l'admin
+        const foundAdmin = mockUsers.find(u => u.email === email && u.password === password);
         
-        if (foundUser) {
+        if (foundAdmin) {
           // Ne pas inclure le mot de passe dans les données utilisateur stockées
-          const { password, ...userWithoutPassword } = foundUser;
+          const { password, ...userWithoutPassword } = foundAdmin;
           setUser(userWithoutPassword);
           localStorage.setItem('user', JSON.stringify(userWithoutPassword));
           resolve(userWithoutPassword);
+          return;
+        }
+        
+        // Vérifier si c'est un utilisateur (pattern email@example.com avec password123)
+        if (email.endsWith('@example.com') && password === 'password123') {
+          // Extraire le nom d'utilisateur de l'email
+          const username = email.split('@')[0];
+          
+          // Créer un utilisateur dynamiquement
+          const dynamicUser = {
+            id: `user-${Date.now()}`, // ID unique
+            name: `${username.charAt(0).toUpperCase()}${username.slice(1)}`, // Première lettre en majuscule
+            email: email,
+            role: 'user' as UserRole
+          };
+          
+          setUser(dynamicUser);
+          localStorage.setItem('user', JSON.stringify(dynamicUser));
+          resolve(dynamicUser);
         } else {
           reject(new Error('Identifiants invalides'));
         }
