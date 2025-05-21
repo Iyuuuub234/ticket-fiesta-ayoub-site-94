@@ -31,7 +31,9 @@ const ticketFormSchema = z.object({
   category: z.string().min(1, {
     message: "La catégorie est requise.",
   }),
-  price: z.string().transform(val => Number(val.replace(',', '.'))),
+  price: z.coerce.number().min(0, {
+    message: "Le prix ne peut pas être négatif.",
+  }),
   description: z.string().min(10, {
     message: "La description doit contenir au moins 10 caractères.",
   }),

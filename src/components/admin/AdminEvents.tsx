@@ -27,7 +27,7 @@ const AdminEvents = () => {
     location: "",
     venue: "",
     category: "Concerts",
-    price: "0",
+    price: 0, // Make sure this is a number
     description: "",
     featured: false,
   };
@@ -97,7 +97,7 @@ const AdminEvents = () => {
         location: selectedEvent.location,
         venue: selectedEvent.venue,
         category: selectedEvent.category,
-        price: String(selectedEvent.price), // Convert price to string for the form
+        price: selectedEvent.price, // Keep as number here
         description: selectedEvent.description,
         featured: selectedEvent.featured,
       };
