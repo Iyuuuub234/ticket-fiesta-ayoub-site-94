@@ -80,7 +80,7 @@ const AdminEvents = () => {
       venue: data.venue,
       category: data.category,
       image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14",
-      price: Number(data.price),
+      price: Number(data.price), // Ensure this is a number
       description: data.description,
       featured: data.featured,
     };
@@ -104,7 +104,7 @@ const AdminEvents = () => {
       location: event.location,
       venue: event.venue,
       category: event.category,
-      price: String(event.price),
+      price: String(event.price), // Convert number to string for the form
       description: event.description,
       featured: event.featured,
     });

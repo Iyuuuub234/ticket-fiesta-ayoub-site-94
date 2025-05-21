@@ -9,6 +9,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Calendar, Ticket, User, Bookmark, ShoppingCart } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { formatDate } from '@/lib/utils';
 
 const UserDashboard = () => {
   const { user, isAuthenticated } = useAuth();
