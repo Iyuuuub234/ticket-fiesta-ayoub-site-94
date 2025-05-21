@@ -28,7 +28,7 @@ const AdminDashboard = () => {
         <AdminStats />
 
         {/* Onglets pour différentes sections */}
-        <Tabs defaultValue="overview" className="space-y-4">
+        <Tabs defaultValue="events" className="space-y-4">
           <TabsList>
             <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
             <TabsTrigger value="sales">Ventes</TabsTrigger>
