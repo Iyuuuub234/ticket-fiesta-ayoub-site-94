@@ -11,7 +11,7 @@ import { categories } from '@/data/events';
 import TicketGrid from '@/components/home/TicketGrid';
 import AboutSection from '@/components/home/AboutSection';
 import { Button } from '@/components/ui/button';
-import { LogIn } from 'lucide-react';
+import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 
@@ -25,6 +25,10 @@ const Index = () => {
 
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
   };
 
   const handleDashboardClick = () => {
@@ -49,17 +53,23 @@ const Index = () => {
                 <h2 className="text-2xl font-bold text-center mb-6">Trouvez votre prochain événement</h2>
                 <SearchBar onSearch={handleSearch} />
                 
-                {/* Bouton de connexion */}
+                {/* Boutons de connexion et d'inscription */}
                 <div className="mt-6 text-center">
                   {isAuthenticated ? (
                     <Button className="btn-gradient" onClick={handleDashboardClick}>
                       Accéder à mon espace
                     </Button>
                   ) : (
-                    <Button className="bg-ticket-purple hover:bg-ticket-purple/90" onClick={handleLoginClick}>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Se connecter
-                    </Button>
+                    <div className="flex justify-center gap-4">
+                      <Button className="bg-ticket-purple hover:bg-ticket-purple/90" onClick={handleLoginClick}>
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Se connecter
+                      </Button>
+                      <Button variant="outline" className="border-ticket-purple text-ticket-purple hover:bg-ticket-purple hover:text-white" onClick={handleRegisterClick}>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        S'inscrire
+                      </Button>
+                    </div>
                   )}
                 </div>
               </div>
