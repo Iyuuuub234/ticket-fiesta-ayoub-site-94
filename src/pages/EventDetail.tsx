@@ -4,8 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, Info, Ticket, ChevronRight, Share2, Heart, Users } from 'lucide-react';
-import { getEventById, getEventsByCategory } from '@/data/events';
+import { Calendar, Clock, MapPin, Info, Ticket, ChevronRight, Heart, Users } from 'lucide-react';
+import { useEvents } from '@/context/EventsContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +16,7 @@ import EventSharingButtons from '@/components/events/EventSharingButtons';
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { getEventById, getEventsByCategory } = useEvents();
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isInFavorites } = useFavorites();
   const { toast } = useToast();
@@ -127,17 +128,19 @@ const EventDetail = () => {
                   </p>
                 </div>
                 
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4 flex items-center">
-                    <Users className="mr-2 text-ticket-purple" /> 
-                    Événements similaires
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {similarEvents.map((similarEvent) => (
-                      <EventCard key={similarEvent.id} event={similarEvent} />
-                    ))}
+                {similarEvents.length > 0 && (
+                  <div className="mb-8">
+                    <h2 className="text-xl font-bold mb-4 flex items-center">
+                      <Users className="mr-2 text-ticket-purple" /> 
+                      Événements similaires
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {similarEvents.map((similarEvent) => (
+                        <EventCard key={similarEvent.id} event={similarEvent} />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               
               <div className="lg:col-span-1">

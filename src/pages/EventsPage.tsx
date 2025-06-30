@@ -5,25 +5,21 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import EventCard from '@/components/events/EventCard';
 import SearchBar from '@/components/ui/SearchBar';
-import { 
-  events, 
-  categories, 
-  getEventsByCategory,
-  searchEvents
-} from '@/data/events';
+import { categories } from '@/data/events';
+import { useEvents } from '@/context/EventsContext';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Filter } from 'lucide-react';
 
 const EventsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filteredEvents, setFilteredEvents] = useState(events);
+  const { getEventsByCategory, searchEvents } = useEvents();
+  const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState('Tous');
   
   const categoryParam = searchParams.get('category');
   const searchQuery = searchParams.get('search');
 
   useEffect(() => {
-    let filtered = events;
+    let filtered: any[] = [];
     
     // Filtrer par catégorie si spécifiée
     if (categoryParam) {
@@ -31,6 +27,7 @@ const EventsPage = () => {
       filtered = getEventsByCategory(categoryParam);
     } else {
       setActiveCategory('Tous');
+      filtered = getEventsByCategory('Tous');
     }
     
     // Filtrer par recherche si spécifiée
@@ -39,7 +36,7 @@ const EventsPage = () => {
     }
     
     setFilteredEvents(filtered);
-  }, [categoryParam, searchQuery]);
+  }, [categoryParam, searchQuery, getEventsByCategory, searchEvents]);
 
   const handleSearch = (query: string) => {
     if (query) {

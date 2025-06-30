@@ -3,10 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { getFeaturedEvents } from '@/data/events';
+import { useEvents } from '@/context/EventsContext';
 import EventCard from '../events/EventCard';
 
 const FeaturedEvents: React.FC = () => {
+  const { getFeaturedEvents } = useEvents();
   const featuredEvents = getFeaturedEvents().slice(0, 8); // Show up to 8 featured events
 
   return (

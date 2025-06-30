@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, Download } from "lucide-react";
-import { events } from "@/data/events";
 import { useTransactions } from "@/context/TransactionsContext";
+import { useEvents } from "@/context/EventsContext";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { EventForm, TicketFormValues } from "./EventForm";
@@ -13,11 +13,11 @@ import { DeleteEventDialog } from "./DeleteEventDialog";
 
 const AdminEvents = () => {
   const { transactions } = useTransactions();
+  const { events, addEvent, updateEvent, deleteEvent } = useEvents();
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [localEvents, setLocalEvents] = useState([...events]);
 
   // Default values for the event form
   const defaultFormValues: TicketFormValues = {
@@ -27,7 +27,7 @@ const AdminEvents = () => {
     location: "",
     venue: "",
     category: "Concerts",
-    price: 0, // Make sure this is a number
+    price: 0,
     description: "",
     featured: false,
   };
@@ -42,18 +42,29 @@ const AdminEvents = () => {
       venue: data.venue,
       category: data.category,
       image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14",
-      price: Number(data.price), // Ensure price is converted to a number
+      price: Number(data.price),
       description: data.description,
       featured: data.featured,
     };
     
-    setLocalEvents([newEvent, ...localEvents]);
-    setIsAddDialogOpen(false);
+    if (selectedEvent) {
+      // Update existing event
+      updateEvent(selectedEvent.id, { ...newEvent, id: selectedEvent.id });
+      toast({
+        title: "Ticket modifié",
+        description: `Le ticket pour "${data.title}" a été modifié avec succès.`,
+      });
+    } else {
+      // Add new event
+      addEvent(newEvent);
+      toast({
+        title: "Ticket ajouté",
+        description: `Le ticket pour "${data.title}" a été ajouté avec succès.`,
+      });
+    }
     
-    toast({
-      title: "Ticket ajouté",
-      description: `Le ticket pour "${data.title}" a été ajouté avec succès.`,
-    });
+    setIsAddDialogOpen(false);
+    setSelectedEvent(null);
   };
 
   const openEditDialog = (event: any) => {
@@ -68,7 +79,7 @@ const AdminEvents = () => {
 
   const handleDeleteTicket = () => {
     if (selectedEvent) {
-      setLocalEvents(localEvents.filter(e => e.id !== selectedEvent.id));
+      deleteEvent(selectedEvent.id);
       setIsDeleteDialogOpen(false);
       setSelectedEvent(null);
       
@@ -97,7 +108,7 @@ const AdminEvents = () => {
         location: selectedEvent.location,
         venue: selectedEvent.venue,
         category: selectedEvent.category,
-        price: selectedEvent.price, // Keep as number here
+        price: selectedEvent.price,
         description: selectedEvent.description,
         featured: selectedEvent.featured,
       };
@@ -111,7 +122,10 @@ const AdminEvents = () => {
         <div className="flex items-center justify-between">
           <CardTitle>Gestion des Événements</CardTitle>
           <div className="flex items-center gap-2">
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
+              setIsAddDialogOpen(open);
+              if (!open) setSelectedEvent(null);
+            }}>
               <DialogTrigger asChild>
                 <Button variant="default" size="sm" className="h-8 gap-1">
                   <Plus className="h-4 w-4" />
@@ -131,7 +145,10 @@ const AdminEvents = () => {
                 <EventForm 
                   defaultValues={getCurrentFormValues()}
                   onSubmit={handleAddTicket}
-                  onCancel={() => setIsAddDialogOpen(false)}
+                  onCancel={() => {
+                    setIsAddDialogOpen(false);
+                    setSelectedEvent(null);
+                  }}
                   isEditing={!!selectedEvent}
                 />
               </DialogContent>
@@ -148,12 +165,12 @@ const AdminEvents = () => {
           </div>
         </div>
         <CardDescription>
-          Liste complète des événements - {localEvents.length} au total
+          Liste complète des événements - {events.length} au total
         </CardDescription>
       </CardHeader>
       <CardContent>
         <EventsTable 
-          events={localEvents}
+          events={events}
           onEdit={openEditDialog}
           onDelete={openDeleteDialog}
           getTicketsSold={getTicketsSold}
