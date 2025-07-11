@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
+import BackToTopButton from '@/components/ui/BackToTopButton';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -120,6 +121,7 @@ const Index = () => {
           </section>
         </main>
         <Footer />
+        <BackToTopButton />
       </div>
     </FavoritesProvider>
   );
