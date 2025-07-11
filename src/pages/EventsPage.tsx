@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import EventCard from '@/components/events/EventCard';
 import SearchBar from '@/components/ui/SearchBar';
+import BackToTopButton from '@/components/ui/BackToTopButton';
 import { categories } from '@/data/events';
 import { useEvents } from '@/context/EventsContext';
 import { Button } from '@/components/ui/button';
@@ -124,6 +124,7 @@ const EventsPage = () => {
         </section>
       </main>
       <Footer />
+      <BackToTopButton />
     </div>
   );
 };
